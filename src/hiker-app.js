@@ -23,6 +23,8 @@ import "@polymer/iron-pages/iron-pages.js";
 import "@polymer/iron-selector/iron-selector.js";
 import "@polymer/paper-icon-button/paper-icon-button.js";
 import "./my-icons.js";
+import "./services/search-service.js";
+import searchService from "./services/search-service.js";
 
 // Gesture events like tap and track generated from touch will not be
 // preventable, allowing for better scrolling performance.
@@ -87,7 +89,7 @@ class HikerApp extends PolymerElement {
       </app-header>
 
       <iron-pages selected="[[page]]" attr-for-selected="name" role="main">
-        <search-view name="searchView"></search-view>
+        <results-list-view name="resultsListView" hikings={{hikings}}></results-list-view>
         <view404 name="view404"></view404>
       </iron-pages>
     `;
@@ -101,7 +103,8 @@ class HikerApp extends PolymerElement {
         observer: "_pageChanged"
       },
       routeData: Object,
-      subroute: Object
+      subroute: Object,
+      hikings: { type: Array }
     };
   }
 
@@ -111,8 +114,8 @@ class HikerApp extends PolymerElement {
 
   _routePageChanged(page) {
     if (!page) {
-      this.page = "searchView";
-    } else if (["searchView"].indexOf(page) !== -1) {
+      this.page = "resultsListView";
+    } else if (["resultsListView"].indexOf(page) !== -1) {
       this.page = page;
     } else {
       this.page = "view404";
@@ -125,10 +128,15 @@ class HikerApp extends PolymerElement {
     // Note: `polymer build` doesn't like string concatenation in the import
     // statement, so break it up.
     switch (page) {
-      case "searchView":
-        import("./search-view.js");
+      case "resultsListView":
+        import("./components/results/results-list-view.js");
         break;
     }
+  }
+
+  ready() {
+    super.ready();
+    this.hikings = searchService.findAll();
   }
 }
 

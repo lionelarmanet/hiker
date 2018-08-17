@@ -9,7 +9,8 @@ class Location {
 }
 
 class HikingResult {
-  constructor(title, image, mountain, kindOfActivity, location) {
+  constructor(id, title, image, mountain, kindOfActivity, location) {
+    this.id = id;
     this.title = title;
     this.image = image;
     this.mountain = mountain;
@@ -28,6 +29,7 @@ function findAll() {
     .map(
       x =>
         new HikingResult(
+          x.idtf,
           x.libelle,
           x.img,
           x.massif.libelle,
